@@ -41,26 +41,34 @@ def function(y):
 	return [x0, x1, x2, x3]
 	
 def compute_point(cirpoint, r):
-	y = cirpoint + [r]
+	y = cirpoint + [1]
 	#print(y)
 	X = function(y)
 	#print(X)
 	if abs(X[3] > 1e-20):
 		x, y, z = X[0]/X[3], X[1]/X[3], X[2]/X[3]
+		#print(str(x)+" "+str(y)+" "+str(z))
 		return [x, y, z]
 	return None
 	
 def interpolate_points(c, r, ep, bound, left_point, right_point, beg_k, mid_k, end_k):	
 	if beg_k == mid_k or beg_k >= end_k:
-		print("max depth reached in interpolate_points, something went wrong: beg_k="+str(beg_k))
+		#print("max depth reached in interpolate_points, something went wrong: beg_k="+str(beg_k))
+		return None
 	cirpoint = c.eval(mid_k)
 	p = compute_point(cirpoint, r)
-		
+	if p is None:
+		return None
+	
 	x, y, z = p[0], p[1], p[2]
 	if euclidean_distance(x, y, z) < bound:
 		d = euclidean_distance(x-left_point[0], y-left_point[1], z-left_point[2])
 		if d > ep: #add any points that need to be added prior to the point
-			lm_point = interpolate_points(c, r, ep, bound, left_point, p, beg_k, (beg_k+mid_k)/2, mid_k)
+			try:
+				lm_point = interpolate_points(c, r, ep, bound, left_point, p, beg_k, (beg_k+mid_k)/2, mid_k)
+			except RecursionError as e:
+				lm_point = None
+				
 			if lm_point is not None:
 				d = euclidean_distance(x-lm_point[0], y-lm_point[1], z-lm_point[2])
 			
@@ -69,7 +77,10 @@ def interpolate_points(c, r, ep, bound, left_point, right_point, beg_k, mid_k, e
 		d = euclidean_distance(x-right_point[0], y-right_point[1], z-right_point[2])
 		rm_point = None
 		if d > ep: #addany points that need to be added after the point 
-			rm_point = interpolate_points(c, r, ep, bound, p, right_point, mid_k, (mid_k+end_k)/2, end_k)
+			try:
+				rm_point = interpolate_points(c, r, ep, bound, p, right_point, mid_k, (mid_k+end_k)/2, end_k)
+			except RecursionError as e:
+				rm_point = None
 			
 		return rm_point if rm_point is not None else p
 	else:
@@ -97,7 +108,7 @@ def mapping(cirpoint, c, r, n, ep, bound, last, k):
 	return None
 
 def main(args):
-	print("hello world")
+	#print("hello world")
 	r = float(args[0]) if len(args) >= 1 else 1
 	n = int(args[1]) if len(args) >= 2 else 2000
 	ep = float(args[2]) if len(args) >= 3 else 0.06
@@ -106,10 +117,12 @@ def main(args):
 	
 	if "test" in args:
 		c = cir.circle(r, n)
+		print(c)
 		p = compute_point(c.eval(40), r)
 		print(p)
 		c = cir.circle(0.9, n)
-		p = compute_point(c.eval(40), r)
+		print(c)
+		p = compute_point(c.eval(40), 0.9)
 		print(p)
 		return
 	
