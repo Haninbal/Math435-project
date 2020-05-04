@@ -11,9 +11,10 @@ def main(args):
 	directory = args[3] if len(args) >= 4 else "points"
 	num_radii = int(args[4]) if len(args) >= 5 else 200
 	
+	d = 3 if num_radii < 999 else 4
 	for x in range(num_radii):
 		radius = 0.5*np.tan(x*np.pi/(2*num_radii))
-		m.main([radius, n, ep, bound, directory+"\\"+str(x)+"points_"+str(radius)+".csv"])
+		m.main([radius, n, ep, bound, directory+"\\"+str(x).zfill(d)+"points_"+str(radius)+".csv"])
 		
 		#time.sleep(0.1)
 	
