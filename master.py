@@ -15,7 +15,7 @@ def main(args):
 		radius = 0.5*np.tan(x*np.pi/(2*num_radii))
 		m.main([radius, n, ep, bound, directory+"\\"+str(x)+"points_"+str(radius)+".csv"])
 		
-		time.sleep(0.1)
+		#time.sleep(0.1)
 	
 	
 	
