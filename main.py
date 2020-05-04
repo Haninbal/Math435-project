@@ -51,7 +51,7 @@ def compute_point(cirpoint, r):
 		return [x, y, z]
 	return None
 	
-def interpolate_points(c, r, ep, bound, left_point, right_point, beg_k, mid_k, end_k):	
+def interpolate_points(c, r, n, ep, bound, left_point, right_point, beg_k, mid_k, end_k):	
 	if beg_k == mid_k or beg_k >= end_k:
 		#print("max depth reached in interpolate_points, something went wrong: beg_k="+str(beg_k))
 		return None
@@ -65,20 +65,20 @@ def interpolate_points(c, r, ep, bound, left_point, right_point, beg_k, mid_k, e
 		d = euclidean_distance(x-left_point[0], y-left_point[1], z-left_point[2])
 		if d > ep: #add any points that need to be added prior to the point
 			try:
-				lm_point = interpolate_points(c, r, ep, bound, left_point, p, beg_k, (beg_k+mid_k)/2, mid_k)
+				lm_point = interpolate_points(c, r, n, ep, bound, left_point, p, beg_k, (beg_k+mid_k)/2, mid_k)
 			except RecursionError as e:
 				lm_point = None
 				
 			if lm_point is not None:
 				d = euclidean_distance(x-lm_point[0], y-lm_point[1], z-lm_point[2])
 			
-		to_output(p + [d, mid_k]) #add the point 
+		to_output(p + [d, mid_k*2*np.pi/n]) #add the point 
 		
 		d = euclidean_distance(x-right_point[0], y-right_point[1], z-right_point[2])
 		rm_point = None
 		if d > ep: #addany points that need to be added after the point 
 			try:
-				rm_point = interpolate_points(c, r, ep, bound, p, right_point, mid_k, (mid_k+end_k)/2, end_k)
+				rm_point = interpolate_points(c, r, n, ep, bound, p, right_point, mid_k, (mid_k+end_k)/2, end_k)
 			except RecursionError as e:
 				rm_point = None
 			
@@ -98,7 +98,7 @@ def mapping(cirpoint, c, r, n, ep, bound, last, k):
 		if last is not None: 
 			d = euclidean_distance(x-last[0], y-last[1], z-last[2])
 			if d > ep:
-				r_point = interpolate_points(c, r, ep, bound, last, p, k-1, k-0.5, k)
+				r_point = interpolate_points(c, r, n, ep, bound, last, p, k-1, k-0.5, k)
 				if r_point is not None:
 					d = euclidean_distance(x-r_point[0], y-r_point[1], z-r_point[2])
 		else:
@@ -138,7 +138,7 @@ def main(args):
 		cirpoint = c.eval(k)
 		temp = mapping(cirpoint, c, r, n, ep, bound, last, k)
 		if temp is not None:
-			to_output(temp+[k])
+			to_output(temp+[k*2*np.pi/n])
 			last = temp
 		else:
 			pass

@@ -19,11 +19,11 @@ python main.py 1.5 2000 0.06 10 points-1_5.csv
 
 
 the output is a spreadsheet to look like
-x, y, z, distance, "k"
+x, y, z, distance, theta
 
 x, y, z are the euclidean coordinates 
 distance is the distance from the previous points ("n/a" if not applicable)
-k is the number from [0, n) that was queried into the circle.
+theta is the angle (in radians) that was used on the circle
 
 
 to run for multiple curves:
