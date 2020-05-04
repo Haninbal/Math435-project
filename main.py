@@ -102,7 +102,7 @@ def mapping(cirpoint, c, r, n, ep, bound, last, k):
 				if r_point is not None:
 					d = euclidean_distance(x-r_point[0], y-r_point[1], z-r_point[2])
 		else:
-			d = "n/a"
+			d = 0
 		set_last(k)
 		return p + [d]
 	return None
