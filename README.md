@@ -1,7 +1,6 @@
 # Math435-project
 curves and surfaces and points on curves on surfaces
 
-
 to run for a single curve:
 python main.py r n ep bound filename
 
